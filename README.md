@@ -4,7 +4,7 @@ https://github.com/ciro-maciel/git-tag
 ### back-end
 [go lang](https://golang.org/)
 
-#### endpoint
+#### endpoints
 - get - http://localhost:8080/repository/user/ciro-maciel
 - get - http://localhost:8080/repository/tag/xxxx
 - post - http://localhost:8080/tag/10270722

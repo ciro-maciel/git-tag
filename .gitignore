@@ -21,3 +21,6 @@ vqmod/mods.cache
 back-end/__debug_bin
 
 .vscode
+
+node_modules/*
+front-end/node_modules/*
