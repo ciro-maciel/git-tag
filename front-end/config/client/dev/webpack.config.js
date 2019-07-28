@@ -7,10 +7,11 @@ module.exports = (mode) => {
   return merge(common(mode), {
     plugins: [new webpack.HotModuleReplacementPlugin()],
     devServer: {
-      contentBase: path.join(__dirname, '../../www/'),
+      contentBase: path.join(__dirname, '../../../www/'),
+      index: 'index.html',
       compress: true,
       open: true,
-      port: 9090,
+      port: 8080,
       hot: true,
       historyApiFallback: true,
     },

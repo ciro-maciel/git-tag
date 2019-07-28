@@ -18,7 +18,8 @@ https://github.com/ciro-maciel/git-tag
  - documentacao 
  - conexao com o banco atraves de repository pattern
  - logica para sync de repositorio 
- - http types 
+ - verificar http types 
+ - criar dinamicamente a estrutura do banco de dados
 
 ### front-end
 [react JS](https://reactjs.org/)

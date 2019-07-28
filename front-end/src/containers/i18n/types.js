@@ -1,0 +1,1 @@
+export const I18n_CHANGE = 'i18n_CHANGE';
