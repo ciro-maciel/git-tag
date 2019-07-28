@@ -3,26 +3,27 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/google/go-github/github"
 	"github.com/gorilla/mux"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 // Repository ...
 type Repository struct {
-	ID          int64  `json:"id"`
+	ID          string `json:"id"`
 	UserName    string `json:"userName"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	URL         string `json:"url"`
 	Language    string `json:"language"`
-	Tags        string `json:"tags"`
-	index       int    `json:"index"`
 }
 
-// GetRepositoryByUser ...
+// GetRepositoriesByUser ...
 func GetRepositoriesByUser(response http.ResponseWriter, request *http.Request) {
 
 	params := mux.Vars(request)
@@ -34,6 +35,7 @@ func GetRepositoriesByUser(response http.ResponseWriter, request *http.Request) 
 
 	SaveAllRepositoriesByUser(repositories, userName)
 
+	response.Header().Set("content-type", "application/json")
 	json.NewEncoder(response).Encode(repositories)
 }
 
@@ -56,11 +58,11 @@ func GetAllRepositoriesByUser(userName string) []Repository {
 			break
 		}
 
-		for index, element := range repositoriesStarred {
+		for _, element := range repositoriesStarred {
 
 			var repository Repository
 
-			repository.ID = *element.Repository.ID
+			repository.ID = strconv.FormatInt(*element.Repository.ID, 10)
 			repository.UserName = userName
 			repository.Name = *element.Repository.Name
 			if element.Repository.Description != nil {
@@ -70,7 +72,6 @@ func GetAllRepositoriesByUser(userName string) []Repository {
 			if element.Repository.Language != nil {
 				repository.Language = *element.Repository.Language
 			}
-			repository.index = index
 
 			repositories = append(repositories, repository)
 		}
@@ -93,4 +94,72 @@ func SaveAllRepositoriesByUser(repositories []Repository, userName string) bool 
 
 	return true
 
+}
+
+// GetRepositoriesByTag ...
+func GetRepositoriesByTag(response http.ResponseWriter, request *http.Request) {
+
+	params := mux.Vars(request)
+	tagName := string(params["tagName"])
+
+	var repositories []Repository
+
+	repositories = GetAllRepositoriesByTag(tagName)
+
+	response.Header().Set("content-type", "application/json")
+	json.NewEncoder(response).Encode(repositories)
+}
+
+// GetAllRepositoriesByTag ...
+func GetAllRepositoriesByTag(tagName string) []Repository {
+
+	var repositories []Repository
+	var tag Tag
+
+	// fmt.Printf(tagName + "\n")
+
+	collectionTag := mongoClient.Database("git-tag").Collection("tag")
+	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
+	query := bson.M{
+		"$text": bson.M{
+			"$search": tagName,
+		},
+	}
+
+	countDocument, err := collectionTag.CountDocuments(ctx, query)
+
+	if err != nil {
+		return nil
+	}
+
+	if countDocument != 0 {
+
+		err := collectionTag.FindOne(ctx, query).Decode(&tag)
+
+		if err != nil {
+			return nil
+		}
+
+		for _, repositoryId := range tag.Repositories {
+
+			var repository Repository
+
+			collectionRepository := mongoClient.Database("git-tag").Collection("repository")
+			collectionRepository.FindOne(ctx, bson.D{{"id", repositoryId}}).Decode(&repository)
+
+			// collectionRepository.FindOne(ctx, Repository{ID: repositoryId}).Decode(&repository)
+
+			fmt.Printf(repositoryId + "\n")
+			fmt.Printf("%+v\n", repository)
+
+			if err != nil {
+				return nil
+			}
+
+			repositories = append(repositories, repository)
+		}
+
+	}
+
+	return repositories
 }

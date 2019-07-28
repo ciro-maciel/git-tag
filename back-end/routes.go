@@ -24,10 +24,22 @@ var routes = Routes{
 		Index,
 	},
 	Route{
-		"RepositoryByUser",
+		"GetRepositoriesByUser",
 		"GET",
-		"/repository/{userName}",
+		"/repository/user/{userName}",
 		GetRepositoriesByUser,
+	},
+	Route{
+		"GetAllRepositoriesByTag",
+		"GET",
+		"/repository/tag/{tagName}",
+		GetRepositoriesByTag,
+	},
+	Route{
+		"AddTagInRepository",
+		"POST",
+		"/tag/{repository}",
+		AddTagInRepository,
 	},
 }
 

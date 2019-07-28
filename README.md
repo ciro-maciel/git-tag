@@ -2,10 +2,32 @@
 https://github.com/ciro-maciel/git-tag
 
 ### back-end
-in go lang - https://golang.org/
+[go lang](https://golang.org/)
+
+#### endpoint
+- get - http://localhost:8080/repository/user/ciro-maciel
+- get - http://localhost:8080/repository/tag/xxxx
+- post - http://localhost:8080/tag/10270722
+```
+{
+	"name": "xxxx"
+}
+```
+
+#### melhorias
+ - documentacao 
+ - conexao com o banco atraves de repository pattern
+ - logica para sync de repositorio 
+ - http types 
 
 ### front-end
-in react JS - https://reactjs.org/
+[react JS](https://reactjs.org/)
+
+#### melhorias
+- habilitar PWA
 
 ### container
-in docker - https://www.docker.com/
+[docker](https://www.docker.com/)
+
+#### melhorias
+- usar docker compose
