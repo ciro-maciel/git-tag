@@ -27,7 +27,7 @@
     "aws-serverless-express": "^3.3.6",
     "compression": "^1.7.1",
     "express": "^4.16.2",
-    "marked": "^0.3.6",
+    "marked": "^4.0.10",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-helmet": "^5.2.0",
